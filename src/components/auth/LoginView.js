@@ -6,6 +6,9 @@ const LoginView = props => (
     <h1>Login</h1>
     <div>
       <div>
+        Don't have an account? <Link to="/register">Create an account</Link>
+      </div>
+      <div>
         <input type="text" id="email" placeholder="email" onChange={props.handleInputChange} />
       </div>
       <div>
@@ -13,7 +16,7 @@ const LoginView = props => (
       </div>
       <button onClick={props.handleLogin}>Sign in</button>
       <div>
-        Don't have an account? <Link to="/register">Create an account</Link>
+        {props.error && props.message}
       </div>
     </div>
   </div>
