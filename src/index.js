@@ -1,6 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Amplify, { Analytics } from 'aws-amplify'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
+import './index.css'
+import App from './App'
+import indexReducer from './reducers'
+import config from './config'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const store = createStore(indexReducer)
+
+Amplify.configure({
+  identityPoolId: config.identityPoolId,
+  region: config.region,
+  identityPoolRegion: config.region,
+  userPoolId: config.userPoolId,
+  userPoolWebClientId: config.appClient
+})
+Analytics.disable()
+
+ReactDOM.render(<Provider store={store}>
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+</Provider>, document.getElementById('root'))
