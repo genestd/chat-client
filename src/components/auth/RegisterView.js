@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const RegisterView = props => (
   <div>
-    <h1>Login</h1>
+    <h1>Register</h1>
     <div>
       <div>
         <input type="text" id="name" placeholder="name" onChange={props.handleInputChange} />
