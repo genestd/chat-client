@@ -1,6 +1,9 @@
 export const LOGIN = 'LOGIN'
 
-export const login = (email) => ({
+export const login = (email, name = '', conversations = []) => ({
   type: LOGIN,
-  email
+  email,
+  name, 
+  conversations,
 })
+

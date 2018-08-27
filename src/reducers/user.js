@@ -11,7 +11,9 @@ const userReducer = (state=INITIAL_STATE, action) => {
       return {
         ...state,
         loggedIn: true,
-        email: action.email
+        email: action.email,
+        name: action.name,
+        conversations: action.conversations,
       }
       
     default: 
