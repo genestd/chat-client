@@ -6,6 +6,9 @@ const RegisterView = props => (
     <h1>Register</h1>
     <div>
       <div>
+        Already have an account? <Link to="/login">Sign in.</Link>
+      </div>
+      <div>
         <input type="text" id="name" placeholder="name" onChange={props.handleInputChange} />
       </div>
       <div>
@@ -19,7 +22,7 @@ const RegisterView = props => (
       </div>
       <button onClick={props.handleRegister}>Register</button>
       <div>
-        Already have an account? <Link to="/login">Sign in.</Link>
+        { props.error && props.message}
       </div>
     </div>
   </div>

@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Auth } from 'aws-amplify'
+import { withRouter } from 'react-router-dom'
+import { Auth, API, graphqlOperation } from 'aws-amplify'
 import RegisterView from './RegisterView'
 import * as userActions from '../../actions/user'
+import mutations from '../../graphql/mutations'
 
 class Register extends Component {
   state = {
@@ -15,19 +17,21 @@ class Register extends Component {
   
   handleInputChange = e => this.setState({[e.target.id]: e.target.value})
   
-  handleRegister = () => {
-    Auth.signUp({
+  handleRegister = async () => {
+    try {
+      await Auth.signUp({
       username: this.state.email, 
-      password: this.state.password,
-      attributes: {
-        name: this.state.name,
-      }
-    })
-    .then(data => {
-      console.log(data)
-      this.props.actions.login(this.state.email)
-    })
-   .catch(err => console.log(err))
+        password: this.state.password,
+        attributes: {
+          name: this.state.name,
+        }
+      })
+      await API.graphql(graphqlOperation(mutations.addUser, {username: this.state.email, name: this.state.name}))
+      this.props.history.push('/pending')
+    }catch(error){
+      console.log(error)
+      this.setState({error: true, message: error.message || 'An error occurred. Please try again.'})
+    }
   }
   
   render() {
@@ -35,6 +39,8 @@ class Register extends Component {
       <RegisterView 
         handleInputChange={this.handleInputChange}
         handleRegister={this.handleRegister}
+        error={this.state.error}
+        message={this.state.message}
       />
     )
   }
@@ -45,4 +51,4 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(userActions, dispatch),
 })
 
-export default connect(null, mapDispatchToProps)(Register)
+export default withRouter(connect(null, mapDispatchToProps)(Register))
