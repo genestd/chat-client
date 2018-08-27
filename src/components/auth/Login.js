@@ -14,14 +14,14 @@ class Login extends Component {
     error: false,
     message: '',
   }
-  
-  /* 
+
+  /*
   *  Function: handleInputChange
   *  e: event
   *  This function saves user input to local state
   */
   handleInputChange = e => this.setState({[e.target.id]: e.target.value})
-  
+
   /*
   *  Function: handleLogin
   *  Calls Amplify function to log in with email/password from state
@@ -31,17 +31,17 @@ class Login extends Component {
   handleLogin = async () => {
     try {
       await Auth.signIn(this.state.email, this.state.password)
-      const user = await API.graphql(graphqlOperation(queries.GetUserByEmail, { username: this.state.email}))
-      this.props.actions.login(this.state.email, user.name, user.conversations)
+      const result = await API.graphql(graphqlOperation(queries.GetUserByEmail, { username: this.state.email}))
+      this.props.actions.login(this.state.email, result.data.getUsers.name, result.data.getUsers.conversations)
       this.props.history.push('/home')
     } catch(error) {
       this.setState({error: true, message: error.message || 'An error occurred. Please try again.'})
     }
   }
-  
+
   render() {
     return (
-      <LoginView 
+      <LoginView
         handleInputChange={this.handleInputChange}
         handleLogin={this.handleLogin}
         error={this.state.error}
@@ -49,7 +49,7 @@ class Login extends Component {
       />
     )
   }
-  
+
 }
 
 const mapDispatchToProps = dispatch => ({
