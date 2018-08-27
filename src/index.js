@@ -16,7 +16,10 @@ Amplify.configure({
   region: config.region,
   identityPoolRegion: config.region,
   userPoolId: config.userPoolId,
-  userPoolWebClientId: config.appClient
+  userPoolWebClientId: config.appClient,
+  'aws_appsync_graphqlEndpoint': config.appSyncEndpoint,
+  'aws_appsync_region': config.region,
+  'aws_appsync_authenticationType': 'AMAZON_COGNITO_USER_POOLS',
 })
 Analytics.disable()
 
