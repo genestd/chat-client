@@ -15,8 +15,19 @@ class Register extends Component {
     confirmPassword: '',
   }
   
+  /* 
+  *  Function: handleInputChange
+  *  e: event
+  *  This function saves user input to local state
+  */
   handleInputChange = e => this.setState({[e.target.id]: e.target.value})
   
+  /*
+  * Function: handleRegister
+  * Calls Amplify signUp function to register user
+  * If successful, saves user to DynamoDB using GraphQL endpoint,
+  * and navigates to the Pending component to display further instructions.
+  */
   handleRegister = async () => {
     try {
       await Auth.signUp({
@@ -28,7 +39,7 @@ class Register extends Component {
       })
       await API.graphql(graphqlOperation(mutations.addUser, {username: this.state.email, name: this.state.name}))
       this.props.history.push('/pending')
-    }catch(error){
+    } catch(error){
       console.log(error)
       this.setState({error: true, message: error.message || 'An error occurred. Please try again.'})
     }

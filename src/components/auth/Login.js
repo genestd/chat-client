@@ -15,8 +15,19 @@ class Login extends Component {
     message: '',
   }
   
+  /* 
+  *  Function: handleInputChange
+  *  e: event
+  *  This function saves user input to local state
+  */
   handleInputChange = e => this.setState({[e.target.id]: e.target.value})
   
+  /*
+  *  Function: handleLogin
+  *  Calls Amplify function to log in with email/password from state
+  *  If successful, gets user details using AppSync GraphQL endpoint,
+  *  set redux loggedIn to true and navigates to the Home component
+  */
   handleLogin = async () => {
     try {
       await Auth.signIn(this.state.email, this.state.password)
