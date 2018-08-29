@@ -5,6 +5,8 @@
   "dependencies": {
     "aws-amplify": "^1.0.6",
     "aws-amplify-react": "^1.0.6",
+    "immutability-helper": "^2.7.1",
+    "md5": "^2.2.1",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-redux": "^5.0.7",
