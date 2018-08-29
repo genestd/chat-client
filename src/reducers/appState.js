@@ -37,6 +37,13 @@ const appStateReducer = (state=INITIAL_STATE, action) => {
         userList: action.users,
       }
 
+    case appActions.ADD_CONVERSATION:
+      return update(state, {
+        conversations: {
+          $push: [action.conversation]
+        }
+      })
+
     default:
       return state
   }
