@@ -3,6 +3,7 @@ import * as appActions from '../actions/appActions'
 
 const INITIAL_STATE = {
   activeConversation: null,
+  conversationDetails: [],
   conversations: [],
   userList: []
 }
