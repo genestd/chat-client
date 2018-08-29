@@ -5,7 +5,7 @@ const UserList = props => (
     {props.users.map(user => {
       return (
         <div key={user.username} className="chat__user-record">
-          {user.username} <button onClick={() => props.onAddConversation(user.username)}>Chat</button>
+          {user.username} <button className="chat__add-button" onClick={() => props.onAddConversation(user.username)}>Chat</button>
         </div>
       )
     })}

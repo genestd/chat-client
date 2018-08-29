@@ -93,3 +93,18 @@
   line-height: 40px;
   padding: 0 20px;
 }
+
+.chat__button {
+  background-color: cadetblue;
+  padding: 4px 12px;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+}
+.chat__add-button {
+  background-color: royalblue;
+  padding: 4px 12px;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+}
