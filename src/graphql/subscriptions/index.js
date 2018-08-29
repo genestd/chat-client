@@ -8,6 +8,13 @@ const subscriptions = {
         participants
         message
     }
-  }`
+    }`,
+    onAddConversation: `subscription AddUserConversation {
+      onAddUserConversation {
+          username
+          id
+          partner
+      }
+    }`
 }
 export default subscriptions

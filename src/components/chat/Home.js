@@ -24,13 +24,21 @@ class Home extends Component {
       const conversations = await API.graphql(graphqlOperation(queries.GetUserConversations, {username: this.props.user.email}))
       this.props.actions.setUserConversations(conversations.data.getUserConversation.items)
 
-      const subscription = API.graphql(graphqlOperation(subscriptions.onAddMessage))
+      API.graphql(graphqlOperation(subscriptions.onAddMessage))
         .subscribe({
           next: (eventData) => {
             this.props.actions.receiveMessage(eventData.value.data.onAddMessage)
             this.scroll()
           }
         })
+        API.graphql(graphqlOperation(subscriptions.onAddConversation))
+          .subscribe({
+            next: (eventData) => {
+                console.log('eventData', eventData)
+                if (eventData.value.data.onAddUserConversation.username === this.props.user.email)
+                    this.props.actions.addConversation(eventData.value.data.onAddUserConversation)
+            }
+          })
       this.scroll()
     } catch(error) {
       console.log(error)
@@ -89,11 +97,11 @@ class Home extends Component {
         id,
         partner
       }))
-      this.props.actions.addConversation({
-        username: this.props.user.email,
-        id,
-        partner
-      })
+      // this.props.actions.addConversation({
+      //   username: this.props.user.email,
+      //   id,
+      //   partner
+      // })
       this.props.actions.setActiveConversation(id, [] ,partner)
       const result2 = await API.graphql(graphqlOperation(mutations.addUserConversation, {
         username: partner,
