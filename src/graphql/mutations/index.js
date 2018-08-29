@@ -14,6 +14,13 @@ const mutations = {
       participants
       message
     }
+  }`,
+  addUserConversation: `mutation addUserConversation($username: String!, $id: String!, $partner: String!) {
+    addUserConversation(username: $username, id: $id, partner: $partner) {
+      username
+      id
+      partner
+    }
   }`
 }
 
