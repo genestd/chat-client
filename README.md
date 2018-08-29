@@ -1,6 +1,9 @@
 # Introduction
 This is a React/Redux based chat web application.  It uses AWS Amplify to connect to an AppSync GraphQL implementation
 
+# Live Demo
+https://chat.genest.io
+
 # Installation
 * Clone this repository
 * Install the chat-backend in your AWS account.
