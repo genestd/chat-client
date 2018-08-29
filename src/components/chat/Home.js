@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import md5 from 'md5'
 import ConversationList from './ConversationList'
 import Conversation from './Conversation'
+import UserList from './UserList'
 import { connect } from 'react-redux'
 import queries from '../../graphql/queries'
 import mutations from '../../graphql/mutations'
@@ -16,6 +17,8 @@ class Home extends Component {
     canScroll: false,
   }
 
+  // Load conversations for this user
+  // Subscribe to new messages
   async componentDidMount() {
     try {
       const conversations = await API.graphql(graphqlOperation(queries.GetUserConversations, {username: this.props.user.email}))
@@ -34,14 +37,17 @@ class Home extends Component {
     }
   }
 
+  // Scroll to bottom of messages when received
   scroll = () => {
     const el = document.getElementById('chat-scroller')
     if (el)
       el.scrollTop = (el.scrollHeight - el.clientHeight)
   }
 
+  // Capture message input
   handleInputChange = e => this.setState({message: e.target.value})
 
+  // Create add message mutation on ENTER key
   handleKeyPress = async e => {
     if (e.key === 'Enter' || e.charCode ===13 ) {
       const result = await API.graphql(graphqlOperation(mutations.addMessage, {
@@ -56,7 +62,8 @@ class Home extends Component {
     }
   }
 
-  addConversation = async () => {
+  // Refresh user list from graphql
+  refreshUsers = async () => {
     try {
       const users = await API.graphql(graphqlOperation(queries.GetAllUsers, {limit: 25}))
       this.props.actions.updateUserList(users.data.getAllUsers.items)
@@ -66,22 +73,68 @@ class Home extends Component {
 
   }
 
+  // Select a conversation to show messages
   onConversationClick = async id => {
     const result = await API.graphql(graphqlOperation(queries.GetConversationById, {id}))
     this.props.actions.setActiveConversation(id, result.data.getConversations.items)
     this.scroll()
   }
 
+  // Add a new conversation to the list
+  onAddConversation = async partner => {
+    const id = md5(`${partner}${Date.now()}`)
+    try {
+      const result1 = await API.graphql(graphqlOperation(mutations.addUserConversation, {
+        username: this.props.user.email,
+        id,
+        partner
+      }))
+      this.props.actions.addConversation({
+        username: this.props.user.email,
+        id,
+        partner
+      })
+      this.props.actions.setActiveConversation(id, [] ,partner)
+      const result2 = await API.graphql(graphqlOperation(mutations.addUserConversation, {
+        username: partner,
+        id,
+        partner: this.props.user.email,
+      }))
+      const result3 = await API.graphql(graphqlOperation(mutations.addMessage, {
+        id,
+        messageId: md5(`message${Date.now()}`),
+        timestamp: Math.floor(Date.now()/1000),
+        sender: this.props.user.email,
+        participants: [this.props.user.email, partner],
+        message: 'Starting new chat',
+      }))
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
+  userFilter = user => {
+    return user.username !== this.props.user.email && !this.props.appState.conversations.some(conv => conv.partner === user.username)
+  }
+
   render() {
     return (
       <div className="chat__container">
         <div className="chat__left-pane">
-          <ConversationList
-            conversations={this.props.appState.conversations}
-            activeConversation={this.props.appState.activeConversation}
-            onConversationClick={this.onConversationClick}
-          />
-          <button className="chat__button" onClick={this.addConversation}>Start Chat</button>
+          <div className="chat__left-top">
+            <ConversationList
+              conversations={this.props.appState.conversations}
+              activeConversation={this.props.appState.activeConversation}
+              onConversationClick={this.onConversationClick}
+            />
+          </div>
+          <div className="chat__left-bottom">
+            <UserList
+              users={this.props.appState.userList.filter(this.userFilter)}
+              onAddConversation={this.onAddConversation}
+            />
+            <button className="chat__button" onClick={this.refreshUsers}>Refresh Users</button>
+          </div>
         </div>
         <div className="chat__right-pane">
           <div id="chat-scroller" className="chat__right-top">
