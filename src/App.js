@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import PublicApp from './components/PublicApp'
-import Home from './components/Home'
+import Home from './components/chat/Home'
 import './App.css'
 
 class App extends Component {
