@@ -18,7 +18,7 @@ const RegisterView = props => (
         <input className="login__input" type="password" id="password" placeholder="password" onChange={props.handleInputChange} />
       </div>
       <div>
-        <input className="login__input" type="password" id="confirmPassword" placeholder="confirm password" onChange={props.handleInputChange} />
+        <input className="login__input" type="password" id="confirmPassword" placeholder="confirm password" onChange={props.handleInputChange} onKeyPress={props.handleKeyPress}/>
       </div>
       <button className="login__button" onClick={props.handleRegister}>Register</button>
       <div className="login__text-error">

@@ -8,7 +8,7 @@
   align-items: center;
 }
 .login__input {
-  margin: 10px 0;
+    margin: 10px 0;
     width: 250px;
     height: 30px;
     border-radius: 4px;
@@ -19,13 +19,16 @@
 
 .login__button {
   border-radius: 4px;
-background-color: royalblue;
-color: white;
-font-size: 16px;
-padding: 10px;
+  background-color: royalblue;
+  color: white;
+  font-size: 16px;
+  padding: 10px;
 }
 
 .login__text-error {
   margin: 10px 0;
   color: red;
+}
+.login__pending {
+    text-align: center;
 }
