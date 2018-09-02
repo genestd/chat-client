@@ -29,14 +29,44 @@ class Login extends Component {
   *  set redux loggedIn to true and navigates to the Home component
   */
   handleLogin = async () => {
-    try {
-      await Auth.signIn(this.state.email, this.state.password)
-      const result = await API.graphql(graphqlOperation(queries.GetUserByEmail, { username: this.state.email}))
-      this.props.actions.login(this.state.email, result.data.getUsers.name, result.data.getUsers.conversations)
-      this.props.history.push('/home')
-    } catch(error) {
-      this.setState({error: true, message: error.message || 'An error occurred. Please try again.'})
+      if (this.validate()) {
+          try {
+            await Auth.signIn(this.state.email, this.state.password)
+            const result = await API.graphql(graphqlOperation(queries.GetUserByEmail, { username: this.state.email}))
+            this.props.actions.login(this.state.email, result.data.getUsers.name, result.data.getUsers.conversations)
+            this.props.history.push('/home')
+          } catch(error) {
+            this.setState({error: true, message: error.message || 'An error occurred. Please try again.'})
+          }
+      }
+  }
+
+  /*
+  * Process login on enter key
+  */
+  handleKeyPress = e => {
+    if (e.key === 'Enter' || e.charCode ===13 ) {
+        if (this.validate())
+            this.handleLogin()
     }
+  }
+
+  validate = () => {
+      let valid = true
+      let error = ""
+      if (this.state.email.length === 0) {
+          valid = false
+          error = "Email is required. "
+      }
+      if (this.state.password.length < 8) {
+          valid = false
+          error = `${error}Password must be 8 characters`
+      }
+
+      if (valid === false)
+          this.setState({error: true, message: error})
+
+      return valid
   }
 
   render() {
@@ -44,6 +74,7 @@ class Login extends Component {
       <LoginView
         handleInputChange={this.handleInputChange}
         handleLogin={this.handleLogin}
+        handleKeyPress={this.handleKeyPress}
         error={this.state.error}
         message={this.state.message}
       />
