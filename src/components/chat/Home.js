@@ -58,13 +58,14 @@ class Home extends Component {
   // Create add message mutation on ENTER key
   handleKeyPress = async e => {
     if (e.key === 'Enter' || e.charCode ===13 ) {
+
       const result = await API.graphql(graphqlOperation(mutations.addMessage, {
         id: this.props.appState.activeConversation,
         messageId: md5(`${this.state.message}${Date.now()}`),
         timestamp: Math.floor(Date.now()/1000),
         sender: this.props.user.email,
         participants: this.props.appState.conversationDetails[0].participants,
-        message: this.state.message,
+        message: JSON.stringify(this.state.message).slice(1, -1),
       }))
       this.setState({message: ''})
     }
