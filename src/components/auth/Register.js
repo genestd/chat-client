@@ -14,14 +14,14 @@ class Register extends Component {
     password: '',
     confirmPassword: '',
   }
-  
-  /* 
+
+  /*
   *  Function: handleInputChange
   *  e: event
   *  This function saves user input to local state
   */
   handleInputChange = e => this.setState({[e.target.id]: e.target.value})
-  
+
   /*
   * Function: handleRegister
   * Calls Amplify signUp function to register user
@@ -29,33 +29,70 @@ class Register extends Component {
   * and navigates to the Pending component to display further instructions.
   */
   handleRegister = async () => {
-    try {
-      await Auth.signUp({
-      username: this.state.email, 
-        password: this.state.password,
-        attributes: {
-          name: this.state.name,
+    if (this.validate()) {
+        try {
+          await Auth.signUp({
+          username: this.state.email,
+            password: this.state.password,
+            attributes: {
+              name: this.state.name,
+            }
+          })
+          await API.graphql(graphqlOperation(mutations.addUser, {username: this.state.email, name: this.state.name}))
+          this.props.history.push('/pending')
+        } catch(error){
+          console.log(error)
+          this.setState({error: true, message: error.message || 'An error occurred. Please try again.'})
         }
-      })
-      await API.graphql(graphqlOperation(mutations.addUser, {username: this.state.email, name: this.state.name}))
-      this.props.history.push('/pending')
-    } catch(error){
-      console.log(error)
-      this.setState({error: true, message: error.message || 'An error occurred. Please try again.'})
     }
   }
-  
+
+  /*
+  * Process register on enter key
+  */
+  handleKeyPress = e => {
+    if (e.key === 'Enter' || e.charCode ===13 ) {
+        this.handleRegister()
+    }
+  }
+
+  validate = () => {
+      let valid = true
+      let message = ''
+      if (this.state.name.length === 0) {
+          valid = false
+          message = 'Name is required. '
+      }
+      if (this.state.email.length === 0) {
+          valid = false
+          message = `${message}Email is required. `
+      }
+      if (this.state.password.length < 8) {
+          valid = false
+          message = `${message}Password must be 8 characters. `
+      }
+      if (this.state.password !== this.state.confirmPassword) {
+          valid = false
+          message = `${message}Passwords must match. `
+      }
+      if (!valid)
+        this.setState({ error: true, message })
+
+      return valid
+  }
+
   render() {
     return (
-      <RegisterView 
+      <RegisterView
         handleInputChange={this.handleInputChange}
         handleRegister={this.handleRegister}
+        handleKeyPress={this.handleKeyPress}
         error={this.state.error}
         message={this.state.message}
       />
     )
   }
-  
+
 }
 
 const mapDispatchToProps = dispatch => ({
