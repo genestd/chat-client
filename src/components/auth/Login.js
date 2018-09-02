@@ -46,8 +46,7 @@ class Login extends Component {
   */
   handleKeyPress = e => {
     if (e.key === 'Enter' || e.charCode ===13 ) {
-        if (this.validate())
-            this.handleLogin()
+        this.handleLogin()
     }
   }
 
